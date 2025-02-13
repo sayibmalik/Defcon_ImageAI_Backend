@@ -1,3 +1,4 @@
+
 FROM python:3.12-slim
 
 # Set environment variables
@@ -18,7 +19,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir "numpy<2.0"
 RUN pip install --no-cache-dir python-multipart  # Add this line
 RUN pip install --no-cache-dir accelerate
-
 
 # Copy the application files
 COPY . .
