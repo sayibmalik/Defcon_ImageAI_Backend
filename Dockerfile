@@ -1,4 +1,8 @@
-FROM python:3.11-slim
+FROM python:3.12-slim
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
 
 WORKDIR /app
 
@@ -20,3 +24,6 @@ EXPOSE 8000
 
 # Command to run the application
 CMD ["uvicorn", "imagetext:app", "--host", "0.0.0.0", "--port", "8000"]
+
+
+# Expose the FastAPI port
