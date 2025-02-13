@@ -1,8 +1,7 @@
-fastapi==0.115.8
+fastapi==0.110.0
 uvicorn==0.34.0
-pydantic==2.10.6
-torch==2.5.1
-transformers==4.48.2
+pydantic==2.6.4  # More stable version
+torch==2.2.1  # Latest stable
+transformers==4.37.2  # Latest compatible version
 diffusers==0.32.2
 pillow==10.4.0
-base64
