@@ -1,4 +1,5 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
+import torch
 from fastapi.middleware.cors import CORSMiddleware
 from transformers import BlipProcessor, BlipForConditionalGeneration
 from diffusers import StableDiffusionPipeline
