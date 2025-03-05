@@ -5,15 +5,19 @@ from transformers import BlipProcessor, BlipForConditionalGeneration
 from diffusers import StableDiffusionPipeline
 from PIL import Image
 import io
-import base64
 from io import BytesIO
 from pydantic import BaseModel
+import uuid
+from fastapi.staticfiles import StaticFiles
+import os
+
+# Set up device
 torch_device = "cuda" if torch.cuda.is_available() else "cpu"
 
 # Initialize FastAPI app
 app = FastAPI()
 
-# Add CORS middleware
+# Enable CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
@@ -21,6 +25,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Create 'static' folder to store generated images
+os.makedirs("static", exist_ok=True)
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # ---- Model Initialization ----
 image_processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
@@ -50,10 +58,13 @@ def generate_image(request: TextRequest):
         image = stable_diffusion_pipe(request.prompt, height=512, width=512).images[0]
         if image.mode == "RGBA":
             image = image.convert("RGB")
-        buffered = BytesIO()
-        image.save(buffered, format="PNG")
-        img_str = base64.b64encode(buffered.getvalue()).decode()
-        return {"image": img_str}
+
+        # Save image to static folder
+        image_filename = f"static/{uuid.uuid4()}.png"
+        image.save(image_filename)
+
+        # Return URL of saved image
+        return {"image_url": f"http://localhost:8000/{image_filename}"}
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
